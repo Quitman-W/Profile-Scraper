@@ -27,8 +27,8 @@ class CodeforcesScraper(Scraper):
 
     def format_data(self):
         self.extract_data()
-        date_dict = {}
+        calendar_data = {}
         # codeforces "submissions aren't individual submissions but activity ranking from 1-5
         for key, value in self.data.items():
-            date_dict[key] = value["items"][0]
-        return date_dict
+            calendar_data[key] = value["items"][0]
+        return calendar_data

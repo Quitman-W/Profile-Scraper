@@ -30,9 +30,9 @@ class CodeChefScraper(Scraper):
         submission_data = self.extract_data()
 
         if submission_data:
-            date_dict = {}
+            calendar_data = {}
             for value in submission_data:
-                date_dict[value["date"]] = value["value"]
-            return date_dict
+                calendar_data[value["date"]] = value["value"]
+            return calendar_data
         else:
             print(f"Script content not found for {self.username}")

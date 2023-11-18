@@ -26,6 +26,7 @@ query($userName:String!) {
     def __init__(self, username):
         self.username = username
         self.token = dotenv_values()["GITHUB_TOKEN"]
+        self.data = None
 
     def fetch_data(self):
         headers = {"Authorization": f"Bearer {self.token}"}
@@ -36,14 +37,18 @@ query($userName:String!) {
             json={"query": GitHubScraper.query, "variables": variables},
         )
         if response.status_code == 200:
-            data = response.json()
-            print(data)
+            self.data = response.json()
         else:
             print(f"Error: {response.status_code}, {response.text}")
 
     def format_data(self):
-        pass
-
-
-scraper = GitHubScraper("quitman-w")
-scraper.fetch_data()
+        calendar_data = {}
+        for week in self.data["data"]["user"]["contributionsCollection"][
+            "contributionCalendar"
+        ]["weeks"]:
+            for day in week["contributionDays"]:
+                if day["contributionCount"] > 0:
+                    date = day["date"]
+                    contribution_count = day["contributionCount"]
+                    calendar_data[date] = contribution_count
+        return calendar_data
