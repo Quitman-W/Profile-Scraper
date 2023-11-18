@@ -3,53 +3,49 @@ import json
 import datetime
 
 
-def convert_timestamp_to_date(timestamp):
-    return datetime.datetime.utcfromtimestamp(int(timestamp)).strftime("%Y-%m-%d")
+class LeetCodeScraper:
+    def __init__(self, username):
+        self.username = username
+        self.data = None
 
+    def fetch_data(self):
+        graphql_query = """
+            query userProfileCalendar($username: String!, $year: Int) {
+              matchedUser(username: $username) {
+                userCalendar(year: $year) {
+                  submissionCalendar
+                }
+              }
+            }
+        """
 
-def extract_dates(data):
-    if isinstance(data, dict):
-        return {
-            convert_timestamp_to_date(key): extract_dates(value)
-            for key, value in data.items()
+        variables = {"username": self.username}
+
+        operation_name = "userProfileCalendar"
+
+        graphql_endpoint = "https://leetcode.com/graphql/"
+
+        headers = {
+            "Content-Type": "application/json",
         }
-    elif isinstance(data, list):
-        return [extract_dates(item) for item in data]
-    else:
-        return data
 
-
-graphql_query = """
-    query userProfileCalendar($username: String!, $year: Int) {
-      matchedUser(username: $username) {
-        userCalendar(year: $year) {
-          submissionCalendar
+        payload = {
+            "query": graphql_query,
+            "variables": variables,
+            "operationName": operation_name,
         }
-      }
-    }
-"""
 
-variables = {"username": "Quitty"}
+        response = requests.post(graphql_endpoint, json=payload, headers=headers).json()
+        self.data = json.loads(
+            response["data"]["matchedUser"]["userCalendar"]["submissionCalendar"]
+        )
 
-operation_name = "userProfileCalendar"
+    def format_data(self):
+        calendar_data = {}
+        for key, value in self.data.items():
+            date = self.convert_timestamp_to_date(int(key))
+            calendar_data[date] = value
+        return calendar_data
 
-graphql_endpoint = "https://leetcode.com/graphql/"
-
-headers = {
-    "Content-Type": "application/json",
-}
-
-payload = {
-    "query": graphql_query,
-    "variables": variables,
-    "operationName": operation_name,
-}
-
-response = requests.post(graphql_endpoint, json=payload, headers=headers).json()
-
-calendar_data = extract_dates(
-    json.loads(response["data"]["matchedUser"]["userCalendar"]["submissionCalendar"])
-)
-
-for date, value in calendar_data.items():
-    print(date, value)
+    def convert_timestamp_to_date(self, timestamp):
+        return datetime.datetime.utcfromtimestamp(int(timestamp)).strftime("%Y-%m-%d")
