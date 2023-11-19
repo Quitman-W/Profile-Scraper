@@ -1,5 +1,5 @@
 import requests
-from scraper_interface import Scraper
+from integrations.scraper_interface import Scraper
 import json
 
 # probably going to swap this to kaggles internal api instead of this for more features
@@ -35,12 +35,15 @@ class KaggleScraper(Scraper):
 
     def format_data(self):
         calendar_data = {}
-        for data in self.data["activities"]:
-            formatted_date = data["date"][0:10]
-            submissions = 0
-            # multiple different types of submission on kaggle
-            for key, value in data.items():
-                if key != "date":
-                    submissions += value
-            calendar_data[formatted_date] = submissions
+        try:
+            for data in self.data["activities"]:
+                formatted_date = data["date"][0:10]
+                submissions = 0
+                # multiple different types of submission on kaggle
+                for key, value in data.items():
+                    if key != "date":
+                        submissions += value
+                calendar_data[formatted_date] = submissions
+        except Exception as e:
+            print("Error parsing Kaggle data")
         return calendar_data

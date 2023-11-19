@@ -1,7 +1,7 @@
 import json
 import requests
 import re
-from scraper_interface import Scraper
+from integrations.scraper_interface import Scraper
 
 
 class CodeChefScraper(Scraper):

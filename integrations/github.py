@@ -1,5 +1,5 @@
 import requests
-from scraper_interface import Scraper
+from integrations.scraper_interface import Scraper
 from dotenv import dotenv_values
 
 

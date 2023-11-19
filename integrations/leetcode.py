@@ -1,9 +1,10 @@
 import requests
 import json
 import datetime
+from integrations.scraper_interface import Scraper
 
 
-class LeetCodeScraper:
+class LeetCodeScraper(Scraper):
     def __init__(self, username):
         self.username = username
         self.data = None

@@ -1,5 +1,5 @@
 import requests
-from scraper_interface import Scraper
+from integrations.scraper_interface import Scraper
 
 
 class HackerrankScraper(Scraper):
@@ -9,7 +9,7 @@ class HackerrankScraper(Scraper):
 
     def fetch_data(self):
         headers = {
-            "User-Agent": "CodingProfileScraper/1.0 (quitmanwakeley@gmail.com)",
+            "User-Agent": "ProfileScraper/1.0 (quitmanwakeley@gmail.com)",
         }
         url = f"https://www.hackerrank.com/rest/hackers/{self.username}/submission_histories"
         response = requests.get(url, headers=headers)
