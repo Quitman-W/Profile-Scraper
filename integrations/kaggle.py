@@ -35,7 +35,7 @@ class KaggleScraper(Scraper):
 
     def format_data(self):
         calendar_data = {}
-        try:
+        if "activities" in self.data:
             for data in self.data["activities"]:
                 formatted_date = data["date"][0:10]
                 submissions = 0
@@ -44,6 +44,4 @@ class KaggleScraper(Scraper):
                     if key != "date":
                         submissions += value
                 calendar_data[formatted_date] = submissions
-        except Exception as e:
-            print("Error parsing Kaggle data")
         return calendar_data

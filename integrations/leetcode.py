@@ -1,6 +1,6 @@
 import requests
-import json
 import datetime
+import json
 from integrations.scraper_interface import Scraper
 
 
